@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Single Page Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #2193b0, #6dd5ed);
+      color: #fff;
+      text-align: center;
+      padding: 20px;
+      transition: background 0.5s;
+      position: relative;
+      overflow-x: hidden;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    h1 {
+      margin-bottom: 15px;
+      z-index: 2;
+      position: relative;
+      font-size: 2rem;
+      white-space: nowrap;
+    }
+    .box {
+      background: rgba(0,0,0,0.5);
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 450px;
+      width: 90%;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      position: relative;
+      z-index: 2;
+    }
+    input {
+      width: 90%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+    }
+    .amount-group {
+      margin-bottom: 15px;
+    }
+    .amount-field {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .amount-field input {
+      flex: 1;
+    }
+    button {
+      background: #ff9800;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      margin-top: 15px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      z-index: 2;
+      position: relative;
+    }
+    button:hover {
+      background: #e68900;
+      transform: scale(1.05);
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 16px;
+      display: none;
+      text-align: left;
+      line-height: 1.8;
+      font-family: monospace;
+    }
+    #result h1 {
+      color: #ffeb3b;
+      margin-bottom: 10px;
+      border-bottom: none;
+      padding-bottom: 0;
+      white-space: nowrap;
+      font-size: 1.5rem;
+    }
+    .result-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 3px 0;
+      font-size: 17px;
+    }
+    .result-label {
+      font-weight: bold;
+      min-width: 140px;
+      text-align: left;
+    }
+    .result-value {
+      text-align: left;
+    }
+    .add-btn, .special-btn {
+      font-size: 14px;
+      padding: 6px 15px;
+      margin-top: 8px;
+    }
+    .add-btn { background: #4caf50; }
+    .add-btn:hover { background: #3c9442; }
+    .special-btn { background: #9c27b0; }
+    .special-btn:hover { background: #6d1b7b; }
+    #depositBtn {
+      background: #ff5722;
+      margin-top: 15px;
+      display: none;
+      font-size: 20px;
+      padding: 15px 30px;
+      font-weight: bold;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+    #depositBtn:hover {
+      background: #d84315;
+      transform: scale(1.1);
+    }
+    .payment-buttons {
+      margin-bottom: 15px;
+      z-index: 2;
+      position: relative;
+    }
+    .payment-buttons button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      border-radius: 8px;
+    }
+    .payment-buttons button:nth-child(1) {
+      background: #00CC00;
+      color: #FFFFFF;
+    }
+    .payment-buttons button:nth-child(1):hover {
+      background: #009900;
+    }
+    .payment-buttons button:nth-child(2) {
+      background: #FFC107;
+      color: #000000;
+    }
+    .payment-buttons button:nth-child(2):hover {
+      background: #FFA000;
+    }
+    .bg-logo {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0.1;
+      z-index: 0;
+      max-width: 70%;
+      max-height: 70%;
+      pointer-events: none;
+    }
+    .quote-btn {
+      background: #2196f3;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      font-size: 14px;
+      border-radius: 8px;
+      margin-top: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      display: inline-block;
+    }
+    .quote-btn:hover {
+      background: #1976d2;
+      transform: scale(1.05);
+    }
+    .top-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      max-width: 450px;
+      width: 90%;
+      margin: 10px auto;
+    }
+    .top-buttons button {
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 8px;
+    }
+    .clear-btn { background: #f44336; color: #fff; }
+    .clear-btn:hover { background: #d32f2f; }
+    .status-btn { background: #3f51b5; color: #fff; }
+    .status-btn:hover { background: #303f9f; }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.5rem; }
+      .box { padding: 15px; max-width: 100%; }
+      input, button, .payment-buttons button { font-size: 14px; padding: 8px; }
+      #result h1 { font-size: 1.2rem; }
+      .result-line { font-size: 15px; }
+      #depositBtn { font-size: 18px; padding: 12px 25px; }
+    }
+    @media (min-width: 601px) {
+      h1 { font-size: 2.5rem; }
+      .box { max-width: 600px; padding: 30px; }
+      input, button, .payment-buttons button { font-size: 18px; padding: 12px; }
+      #result h1 { font-size: 1.8rem; }
+      .result-line { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="payment-buttons">
+    <button onclick="setPayment('EasyPaisa')">EasyPaisa</button>
+    <button onclick="setPayment('JazzCash')">JazzCash</button>
+  </div>
+  <img id="bgLogo" class="bg-logo" src="" alt="">
+
+  <div class="top-buttons">
+    <button class="clear-btn" onclick="clearAll()">Clear</button>
+    <!-- 🚀 Spark button shifted here -->
+    <button onclick="showDetails()">🚀 Spark</button>
+    <button class="status-btn" onclick="setStatus()">Status</button>
+  </div>
+
+  <h1>Enter Your Details</h1>
+  <div class="box">
+    <div class="amount-group" id="amountGroup">
+      <div class="amount-field">
+        <input type="number" placeholder="Enter Amount">
+      </div>
+    </div>
+    <button class="add-btn" onclick="addAmount()">+ Add More Amount</button>
+    <button class="special-btn" onclick="addSpecial()">+ Special Amount</button>
+
+    <input type="text" id="accountNumber" placeholder="Account Number">
+    <input type="text" id="accountName" placeholder="Customer Name">
+    <input type="text" id="motherName" placeholder="Mother Name">
+    <input type="text" id="cnic" placeholder="CNIC">
+
+    <input type="text" id="statusInput" placeholder="Write Status Here" style="margin-top:10px; width: 90%; padding: 8px; border-radius: 8px; border: none;">
+
+    <div id="result"></div>
+    <button id="depositBtn" onclick="depositNow()">💳 Deposit Now</button>
+    <button id="quoteBtn" class="quote-btn" style="display: none;">Quote</button>
+  </div>
+
+  <script>
+    let specialAmount = "";
+    let statusText = "";
+
+    function setPayment(type) {
+      let bgLogo = document.getElementById("bgLogo");
+      if(type === "EasyPaisa"){
+        document.body.style.background = "linear-gradient(135deg, #00CC00, #27ae60)";
+        bgLogo.src = "https://seeklogo.com/images/E/easypaisa-logo-6D0F2C4DB0-seeklogo.com.png";
+      } else {
+        document.body.style.background = "linear-gradient(135deg, #FFC107, #D32F2F)";
+        bgLogo.src = "https://seeklogo.com/images/J/jazzcash-logo-32F3835C5E-seeklogo.com.png";
+      }
+    }
+
+    function addAmount() {
+      let group = document.getElementById("amountGroup");
+      let newField = document.createElement("div");
+      newField.classList.add("amount-field");
+      newField.innerHTML = `<input type="number" placeholder="Enter Amount">`;
+      group.appendChild(newField);
+    }
+
+    function addSpecial() {
+      let group = document.getElementById("amountGroup");
+      let newField = document.createElement("div");
+      newField.classList.add("amount-field");
+      newField.innerHTML = `<input type="number" placeholder="Enter Special Amount" oninput="specialAmount=this.value;">`;
+      group.appendChild(newField);
+    }
+
+    function showDetails() {
+      let amountFields = document.querySelectorAll("#amountGroup input");
+      let amounts = [];
+      amountFields.forEach((field) => {
+        if (field.value && field.placeholder !== "Enter Special Amount") amounts.push(field.value);
+      });
+
+      let accountNumber = document.getElementById("accountNumber").value;
+      let accountName = document.getElementById("accountName").value;
+      let motherName = document.getElementById("motherName").value;
+      let cnic = document.getElementById("cnic").value;
+      statusText = document.getElementById("statusInput").value;
+
+      let resultBox = document.getElementById("result");
+      resultBox.style.display = "block";
+      resultBox.innerHTML = `<h1>Account Activation Process</h1>`;
+
+      if(amounts.length > 0){
+        resultBox.innerHTML += `<div class="result-line"><span class="result-label">Amount:</span><span class="result-value">${amounts[0]}</span></div>`;
+        for(let i=1; i<amounts.length; i++){
+          resultBox.innerHTML += `<div class="result-line"><span class="result-value">${amounts[i]}</span></div>`;
+        }
+      }
+
+      if(accountNumber){
+        resultBox.innerHTML += `<div class="result-line"><span class="result-label">Account Number:</span><span class="result-value">${accountNumber}</span></div>`;
+      }
+      if(accountName){
+        resultBox.innerHTML += `<div class="result-line"><span class="result-label">Customer Name:</span><span class="result-value">${accountName}</span></div>`;
+      }
+      if(motherName){
+        resultBox.innerHTML += `<div class="result-line"><span class="result-label">Mother Name:</span><span class="result-value">${motherName}</span></div>`;
+      }
+      if(cnic){
+        resultBox.innerHTML += `<div class="result-line"><span class="result-label">CNIC:</span><span class="result-value">${cnic}</span></div>`;
+      }
+      if(statusText){
+        resultBox.innerHTML += `<div class="result-line"><span class="result-label">Status:</span><span class="result-value">${statusText}</span></div>`;
+      }
+
+      let depositBtn = document.getElementById("depositBtn");
+      depositBtn.style.display = "inline-block";
+      depositBtn.style.fontSize = "22px";
+      depositBtn.style.padding = "18px 35px";
+      depositBtn.innerText = specialAmount ? `💳 Deposit Now (${specialAmount})` : "💳 Deposit Now";
+
+      let quoteBtn = document.getElementById("quoteBtn");
+      quoteBtn.style.display = "none";
+    }
+
+    function depositNow() {
+      alert("Redirecting to deposit process...");
+    }
+
+    function clearAll() {
+      document.getElementById("accountNumber").value = "";
+      document.getElementById("accountName").value = "";
+      document.getElementById("motherName").value = "";
+      document.getElementById("cnic").value = "";
+      document.getElementById("statusInput").value = "";
+      let amountFields = document.querySelectorAll("#amountGroup input");
+      amountFields.forEach((field, index) => {
+        if(index === 0) field.value = "";
+        else field.parentNode.remove();
+      });
+      document.getElementById("result").style.display = "none";
+
+      specialAmount = "";
+      statusText = "";
+      document.getElementById("depositBtn").style.display = "none";
+    }
+
+    function setStatus() {
+      let statusInput = document.getElementById("statusInput").value;
+      if(statusInput.trim() !== ""){
+        statusText = statusInput;
+        showDetails();
+      } else {
+        alert("Please write some status first.");
+      }
+    }
+  </script>
+</body>
+</html>
